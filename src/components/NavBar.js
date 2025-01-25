@@ -1,10 +1,10 @@
 import React from 'react';
 import { Navbar, Container, Nav } from "react-bootstrap";
-import "../styles/NavBar.css";  // Import CSS for styles
+import styles from "../styles/NavBar.css";  
 
 const NavBar = () => {
   return (
-    <Navbar expand="md" fixed="top" className="custom-navbar">
+    <Navbar className={styles.NavBar} expand="md" fixed="top" >
       <Container>
         <Navbar.Brand href="/" aria-label="Home">
           <span className="sr-only">Home</span>
