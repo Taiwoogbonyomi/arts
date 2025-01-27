@@ -1,5 +1,14 @@
 .App {
     font-family: "DM Sans", sans-serif ;
-    background-color: gainsboro;
+    text-align: left;
+    min-height: 100vh;
+}
+
+
+/* Ensure content starts below the navbar */
+.main {
+    padding-top: 80px; 
+    color: rgb(22, 6, 249);
+    font-size: 24px;
 }
 
