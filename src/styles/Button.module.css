@@ -1,0 +1,22 @@
+.Button {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    background-color: #6c63ff; /* Artistic blue */
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .Button:hover {
+    background-color: #4b4fd1; /* Darker blue */
+  }
+  
+  .Button:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+  }
+  

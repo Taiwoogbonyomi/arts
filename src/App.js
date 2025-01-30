@@ -4,9 +4,9 @@ import NavBar from "./components/NavBar";
 import { Container } from "react-bootstrap";
 import Home from "./pages/Home";
 import SignIn from "./pages/SignIn";
-import SignUp from "./pages/SignUp";
+import SignUpForm from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
-import "./api/axiosDefault";
+import "./api/axiosDefaults";
 
 function App() {
   return (
@@ -17,7 +17,7 @@ function App() {
           <Switch>
             <Route exact path="/" component={Home} />
             <Route exact path="/signin" component={SignIn} />
-            <Route exact path="/signup" component={SignUp} />
+            <Route exact path="/signup" component={SignUpForm} />
             <Route component={NotFound} />
           </Switch>
         </Container>

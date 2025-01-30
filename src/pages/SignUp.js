@@ -1,59 +1,202 @@
-import React from 'react';
+import React, { useState } from "react";
+import { Link, useHistory } from "react-router-dom";
 
-function Signup() {
+import styles from "../styles/SignInUpForm.module.css";
+import btnStyles from "../styles/Button.module.css";
+import appStyles from "../App.module.css";
+
+import {
+  Form,
+  Button,
+  Image,
+  Col,
+  Row,
+  Container,
+  Alert,
+} from "react-bootstrap";
+import axios from "axios";
+
+const SignUpForm = () => {
+  const [signUpData, setSignUpData] = useState({
+    username: "",
+    password1: "",
+    password2: "",
+    bio: "",
+    role: "Artist", // Default role
+    profileImage: null,
+  });
+  
+  const { username, password1, password2, bio, role, profileImage } = signUpData;
+  const [errors, setErrors] = useState({});
+  
+  const history = useHistory();
+  
+  const handleChange = (event) => {
+    setSignUpData({
+      ...signUpData,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const handleFileChange = (event) => {
+    setSignUpData({
+      ...signUpData,
+      profileImage: event.target.files[0],
+    });
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    
+    const formData = new FormData();
+    formData.append("username", username);
+    formData.append("password1", password1);
+    formData.append("password2", password2);
+    formData.append("bio", bio);
+    formData.append("role", role);
+    
+    if (profileImage) {
+      formData.append("profileImage", profileImage);
+    }
+
+    try {
+      await axios.post("/dj-rest-auth/registration/", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      history.push("/signin");
+    } catch (err) {
+      setErrors(err.response?.data);
+    }
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      {/* Card Container */}
-      <div className="bg-white p-8 shadow-lg rounded-lg w-11/12 sm:w-3/4 md:w-1/2 lg:w-1/3">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Sign Up for Art-connect</h2>
+    <Row className={styles.Row}>
+      <Col className="my-auto py-2 p-md-2" md={6}>
+        <Container className={`${appStyles.Content} p-4 `}>
+          <h1 className={styles.Header}>Sign up for Art Connect</h1>
 
-        {/* Signup Form */}
-        <form className="space-y-4">
+          <Form onSubmit={handleSubmit}>
+            <Form.Group controlId="username">
+              <Form.Label className="d-none">Username</Form.Label>
+              <Form.Control
+                className={styles.Input}
+                type="text"
+                placeholder="Username"
+                name="username"
+                value={username}
+                onChange={handleChange}
+              />
+            </Form.Group>
+            {errors.username?.map((message, idx) => (
+              <Alert variant="warning" key={idx}>
+                {message}
+              </Alert>
+            ))}
 
-          {/* Username Field */}
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2" htmlFor="username">Username</label>
-            <input
-              type="text"
-              placeholder="Choose a username"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
-              id="username"
-              name="username"
-            />
-          </div>
+            <Form.Group controlId="bio">
+              <Form.Label className="d-none">Bio</Form.Label>
+              <Form.Control
+                className={styles.Input}
+                as="textarea"
+                placeholder="Tell us about yourself and your art"
+                name="bio"
+                value={bio}
+                onChange={handleChange}
+              />
+            </Form.Group>
 
-          {/* Password Field */}
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2" htmlFor="password">Password</label>
-            <input
-              type="password"
-              placeholder="Enter a secure password"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
-              id="password"
-              name="password"
-            />
-          </div>
+            <Form.Group controlId="role">
+              <Form.Label>Role</Form.Label>
+              <Form.Control
+                as="select"
+                name="role"
+                value={role}
+                onChange={handleChange}
+                className={styles.Input}
+              >
+                <option value="Artist">Artist</option>
+                <option value="Viewer">Viewer</option>
+                <option value="Curator">Curator</option>
+              </Form.Control>
+            </Form.Group>
 
-          {/* Confirm Password Field */}
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2" htmlFor="password2">Confirm Password</label>
-            <input
-              type="password"
-              placeholder="Re-enter your password"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
-              id="password2"
-              name="password2"
-            />
-          </div>
+            <Form.Group controlId="profileImage">
+              <Form.Label>Profile Image</Form.Label>
+              <Form.Control
+                type="file"
+                name="profileImage"
+                onChange={handleFileChange}
+                className={styles.Input}
+              />
+            </Form.Group>
+            {errors.profileImage?.map((message, idx) => (
+              <Alert key={idx} variant="warning">
+                {message}
+              </Alert>
+            ))}
 
-          {/* Submit Button */}
-          <button className="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg hover:bg-blue-600 transition duration-300" type="submit">
-            Sign Up
-          </button>
-        </form>
-      </div>
-    </div>
+            <Form.Group controlId="password1">
+              <Form.Label className="d-none">Password</Form.Label>
+              <Form.Control
+                className={styles.Input}
+                type="password"
+                placeholder="Password"
+                name="password1"
+                value={password1}
+                onChange={handleChange}
+              />
+            </Form.Group>
+            {errors.password1?.map((message, idx) => (
+              <Alert key={idx} variant="warning">
+                {message}
+              </Alert>
+            ))}
+
+            <Form.Group controlId="password2">
+              <Form.Label className="d-none">Confirm password</Form.Label>
+              <Form.Control
+                className={styles.Input}
+                type="password"
+                placeholder="Confirm password"
+                name="password2"
+                value={password2}
+                onChange={handleChange}
+              />
+            </Form.Group>
+            {errors.password2?.map((message, idx) => (
+              <Alert key={idx} variant="warning">
+                {message}
+              </Alert>
+            ))}
+
+            <Button
+              className={`${btnStyles.Button} ${btnStyles.Wide} ${btnStyles.Bright}`}
+              type="submit"
+            >
+              Sign up
+            </Button>
+            {errors.non_field_errors?.map((message, idx) => (
+              <Alert key={idx} variant="warning" className="mt-3">
+                {message}
+              </Alert>
+            ))}
+          </Form>
+        </Container>
+
+        <Container className={`mt-3 ${appStyles.Content}`}>
+          <Link className={styles.Link} to="/signin">
+            Already have an account? <span>Sign in</span>
+          </Link>
+        </Container>
+      </Col>
+      <Col
+        md={6}
+        className={`my-auto d-none d-md-block p-2 ${styles.SignUpCol}`}
+      >
+
+      </Col>
+    </Row>
   );
-}
+};
 
-export default Signup;
+export default SignUpForm;
