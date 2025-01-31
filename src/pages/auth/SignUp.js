@@ -1,19 +1,10 @@
 import React, { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom"; 
+import styles from "../../styles/SignInUpForm.module.css";
+import btnStyles from "../../styles/Button.module.css"
+import appStyles from "../../App.module.css"
 
-import styles from "../styles/SignInUpForm.module.css";
-import btnStyles from "../styles/Button.module.css";
-import appStyles from "../App.module.css";
-
-import {
-  Form,
-  Button,
-  Image,
-  Col,
-  Row,
-  Container,
-  Alert,
-} from "react-bootstrap";
+import { Form, Button, Col, Row, Container, Alert, Image } from "react-bootstrap";
 import axios from "axios";
 
 const SignUpForm = () => {
@@ -22,15 +13,16 @@ const SignUpForm = () => {
     password1: "",
     password2: "",
     bio: "",
-    role: "Artist", // Default role
+    role: "Artist",
     profileImage: null,
   });
-  
+
   const { username, password1, password2, bio, role, profileImage } = signUpData;
   const [errors, setErrors] = useState({});
-  
-  const history = useHistory();
-  
+  const [preview, setPreview] = useState(null);
+
+  const history = useHistory(); 
+
   const handleChange = (event) => {
     setSignUpData({
       ...signUpData,
@@ -39,40 +31,47 @@ const SignUpForm = () => {
   };
 
   const handleFileChange = (event) => {
+    const file = event.target.files[0];
     setSignUpData({
       ...signUpData,
-      profileImage: event.target.files[0],
+      profileImage: file,
     });
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
+
     const formData = new FormData();
     formData.append("username", username);
     formData.append("password1", password1);
     formData.append("password2", password2);
     formData.append("bio", bio);
     formData.append("role", role);
-    
+
     if (profileImage) {
       formData.append("profileImage", profileImage);
     }
 
     try {
-      await axios.post("/dj-rest-auth/registration/", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      history.push("/signin");
+      await axios.post("/dj-rest-auth/registration/", signUpData,);
+      history.push("/signin"); 
     } catch (err) {
       setErrors(err.response?.data);
     }
   };
 
   return (
-    <Row className={styles.Row}>
-      <Col className="my-auto py-2 p-md-2" md={6}>
-        <Container className={`${appStyles.Content} p-4 `}>
+    <Row className={`${styles.Row} d-flex align-items-center justify-content-center min-vh-100`}>
+      <Col xs={12} md={6}>
+        <Container className={`${appStyles.Content} p-4`} style={{ maxWidth: "500px", minWidth: "320px" }}>
           <h1 className={styles.Header}>Sign up for Art Connect</h1>
 
           <Form onSubmit={handleSubmit}>
@@ -122,13 +121,9 @@ const SignUpForm = () => {
 
             <Form.Group controlId="profileImage">
               <Form.Label>Profile Image</Form.Label>
-              <Form.Control
-                type="file"
-                name="profileImage"
-                onChange={handleFileChange}
-                className={styles.Input}
-              />
+              <Form.Control type="file" name="profileImage" onChange={handleFileChange} className={styles.Input} />
             </Form.Group>
+            {preview && <Image src={preview} alt="Profile Preview" className="mt-3" roundedCircle fluid />}
             {errors.profileImage?.map((message, idx) => (
               <Alert key={idx} variant="warning">
                 {message}
@@ -169,10 +164,7 @@ const SignUpForm = () => {
               </Alert>
             ))}
 
-            <Button
-              className={`${btnStyles.Button} ${btnStyles.Wide} ${btnStyles.Bright}`}
-              type="submit"
-            >
+            <Button className={`${btnStyles.Button} ${btnStyles.Wide} ${btnStyles.Bright}`} type="submit">
               Sign up
             </Button>
             {errors.non_field_errors?.map((message, idx) => (
@@ -183,17 +175,11 @@ const SignUpForm = () => {
           </Form>
         </Container>
 
-        <Container className={`mt-3 ${appStyles.Content}`}>
+        <Container className={`mt-3 ${appStyles.Content}`} style={{ maxWidth: "320px" }}>
           <Link className={styles.Link} to="/signin">
             Already have an account? <span>Sign in</span>
           </Link>
         </Container>
-      </Col>
-      <Col
-        md={6}
-        className={`my-auto d-none d-md-block p-2 ${styles.SignUpCol}`}
-      >
-
       </Col>
     </Row>
   );
