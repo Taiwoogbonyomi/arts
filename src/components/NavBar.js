@@ -3,6 +3,7 @@ import { Navbar, Container, Nav } from 'react-bootstrap';
 import { NavLink, useHistory } from 'react-router-dom';
 import styles from "../styles/NavBar.module.css"; 
 import { useCurrentUser, useSetCurrentUser } from '../contexts/CurrentUserContext';
+import Avatar from "./Avatar"
 import axios from 'axios';
 
 const NavBar = () => {
@@ -21,14 +22,39 @@ const NavBar = () => {
     }
   };
 
+  const addPostIcon = (
+      <NavLink to="/create-post" 
+      className={styles.navLink} 
+      aria-label="Add Post">
+        <i className="fas fa-plus"></i> Add Post
+      </NavLink>
+  )
+
   const loggedInIcons = (
     <>
-      <NavLink to="/profile" className={styles.navLink} aria-label="Profile">
-        <i className="fas fa-user"></i> {currentUser?.username}
+       <NavLink
+        className={styles.NavLink}
+        activeClassName={styles.Active}
+        to="/timeline"
+      >
+        <i className="fas fa-stream"></i>Timeline
       </NavLink>
-      <Nav.Link onClick={handleLogout} aria-label="Logout">
-        <i className="fas fa-sign-out-alt"></i> Logout
-      </Nav.Link>
+      <NavLink
+        className={styles.NavLink}
+        activeClassName={styles.Active}
+        to="/liked"
+      >
+        <i className="fas fa-heart"></i>Liked
+      </NavLink>
+      <NavLink className={styles.NavLink} to="/" onClick={handleLogout}>
+        <i className="fas fa-sign-out-alt"></i>Sign out
+      </NavLink>
+      <NavLink
+        className={styles.NavLink}
+        to={`/profiles/${currentUser?.profile_id}`}
+      >
+        <Avatar src={currentUser?.profile_image} text="Profile" height={40} />
+      </NavLink>
     </>
   );
 
@@ -57,7 +83,7 @@ const NavBar = () => {
         <NavLink to="/" className="navbar-brand" aria-label="Home">
           <Navbar.Brand>ArtConnect</Navbar.Brand>
         </NavLink>
-        
+        {currentUser && addPostIcon}
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto text-left">
