@@ -3,15 +3,17 @@ import { Navbar, Container, Nav } from 'react-bootstrap';
 import { NavLink, useHistory } from 'react-router-dom';
 import styles from "../styles/NavBar.module.css"; 
 import { useCurrentUser, useSetCurrentUser } from '../contexts/CurrentUserContext';
-import Avatar from "./Avatar"
+import Avatar from "./Avatar";
 import axios from 'axios';
+import useClickOutsideToggle from '../hooks/useClickOutsideToggle';
 
 const NavBar = () => {
   const currentUser = useCurrentUser();
   const setCurrentUser = useSetCurrentUser();
   const history = useHistory();
 
-  // Logout Handler
+  const { expanded, setExpanded, ref } = useClickOutsideToggle();
+
   const handleLogout = async () => {
     try {
       await axios.post("/dj-rest-auth/logout/", {}, { withCredentials: true });
@@ -23,36 +25,23 @@ const NavBar = () => {
   };
 
   const addPostIcon = (
-      <NavLink to="/create-post" 
-      className={styles.navLink} 
-      aria-label="Add Post">
-        <i className="fas fa-plus"></i> Add Post
-      </NavLink>
-  )
+    <NavLink to="/create-post" className={styles.navLink} aria-label="Create Post">
+      <i className="fas fa-plus"></i> <span>Create Post</span>
+    </NavLink>
+  );
 
   const loggedInIcons = (
     <>
-       <NavLink
-        className={styles.NavLink}
-        activeClassName={styles.Active}
-        to="/timeline"
-      >
-        <i className="fas fa-stream"></i>Timeline
+      <NavLink className={styles.navLink} activeClassName={styles.activeLink} to="/timeline">
+        <i className="fas fa-stream"></i> <span>Timeline</span>
       </NavLink>
-      <NavLink
-        className={styles.NavLink}
-        activeClassName={styles.Active}
-        to="/liked"
-      >
-        <i className="fas fa-heart"></i>Liked
+      <NavLink className={styles.navLink} activeClassName={styles.activeLink} to="/liked">
+        <i className="fas fa-heart"></i> <span>Liked</span>
       </NavLink>
-      <NavLink className={styles.NavLink} to="/" onClick={handleLogout}>
-        <i className="fas fa-sign-out-alt"></i>Sign out
+      <NavLink className={styles.navLink} to="/" onClick={handleLogout} aria-label="Sign out">
+        <i className="fas fa-sign-out-alt"></i> <span>Sign out</span>
       </NavLink>
-      <NavLink
-        className={styles.NavLink}
-        to={`/profiles/${currentUser?.profile_id}`}
-      >
+      <NavLink className={styles.navLink} to={`/profiles/${currentUser?.profile_id}`}>
         <Avatar src={currentUser?.profile_image} text="Profile" height={40} />
       </NavLink>
     </>
@@ -60,39 +49,27 @@ const NavBar = () => {
 
   const loggedOutIcons = (
     <>
-      <NavLink 
-        to="/signin" 
-        aria-label="Sign in" 
-        className={({ isActive }) => (isActive ? styles.activeLink : styles.navLink)}
-      >
-        <i className="fas fa-sign-in-alt"></i> Sign in
+      <NavLink to="/signin" className={styles.navLink} activeClassName={styles.activeLink} aria-label="Sign in">
+        <i className="fas fa-sign-in-alt"></i> <span>Sign in</span>
       </NavLink>
-      <NavLink 
-        to="/signup" 
-        aria-label="Sign up" 
-        className={({ isActive }) => (isActive ? styles.activeLink : styles.navLink)}
-      >
-        <i className="fas fa-user-plus"></i> Sign up
+      <NavLink to="/signup" className={styles.navLink} activeClassName={styles.activeLink} aria-label="Sign up">
+        <i className="fas fa-user-plus"></i> <span>Sign up</span>
       </NavLink>
     </>
   );
 
   return (
-    <Navbar className={styles.NavBar} expand="md" fixed="top">
+    <Navbar expanded={expanded} className={styles.NavBar} expand="md" fixed="top">
       <Container>
         <NavLink to="/" className="navbar-brand" aria-label="Home">
           <Navbar.Brand>ArtConnect</Navbar.Brand>
         </NavLink>
         {currentUser && addPostIcon}
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Toggle ref={ref} onClick={() => setExpanded(!expanded)} aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto text-left">
-            <NavLink 
-              to="/" 
-              aria-label="Home" 
-              className={({ isActive }) => (isActive ? styles.activeLink : styles.navLink)}
-            >
-              <i className="fas fa-home"></i> Home
+            <NavLink to="/" className={styles.navLink} activeClassName={styles.activeLink} aria-label="Home">
+              <i className="fas fa-home"></i> <span>Home</span>
             </NavLink>
             {currentUser ? loggedInIcons : loggedOutIcons}
           </Nav>

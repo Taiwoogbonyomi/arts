@@ -22,7 +22,7 @@ const SignUpForm = () => {
     username: "",
     password1: "",
     password2: "",
-    profile_image: null, 
+    profile_image: null,
   });
   const [imagePreview, setImagePreview] = useState(null);
   const { username, password1, password2, profile_image } = signUpData;
@@ -35,25 +35,23 @@ const SignUpForm = () => {
     const { name, value, files } = event.target;
 
     if (name === "profile_image") {
-      // Handle file input (image)
       const file = files[0];
       setSignUpData({
         ...signUpData,
         profile_image: file,
       });
 
-      // Create an image preview
       if (file) {
         const reader = new FileReader();
         reader.onloadend = () => {
-          setImagePreview(reader.result); 
+          setImagePreview(reader.result);
         };
-        reader.readAsDataURL(file); 
+        reader.readAsDataURL(file);
       }
     } else {
       setSignUpData({
         ...signUpData,
-        [name]: value, 
+        [name]: value,
       });
     }
   };
@@ -72,19 +70,19 @@ const SignUpForm = () => {
     try {
       await axios.post("/dj-rest-auth/registration/", formData, {
         headers: {
-          "Content-Type": "multipart/form-data", 
+          "Content-Type": "multipart/form-data",
         },
       });
       history.push("/signin");
     } catch (err) {
-      setErrors(err.response?.data);
+      setErrors(err.response?.data || { non_field_errors: ["An unexpected error occurred."] });
     }
   };
 
   return (
     <Row className={styles.Row}>
-      <Col className="my-auto py-2 p-md-2" md={6}>
-        <Container className={`${appStyles.Content} p-4 `}>
+      <Col className="my-auto py-2 p-md-2" md={{ span: 8, offset: 2 }}>
+        <Container className={`${appStyles.Content} p-4`}>
           <h1 className={styles.Header}>sign up</h1>
 
           <Form onSubmit={handleSubmit}>
@@ -177,6 +175,17 @@ const SignUpForm = () => {
               </Alert>
             ))}
           </Form>
+
+          <div className="mt-4 text-center">
+            <Image
+              src={treeLogo}
+              alt="Tree Logo"
+              className={appStyles.FillerImage}
+              style={{ maxWidth: "150px", height: "auto" }}
+              fluid
+            />
+          </div>
+
         </Container>
 
         <Container className={`mt-3 ${appStyles.Content}`}>
@@ -184,9 +193,6 @@ const SignUpForm = () => {
             Already have an account? <span>Sign in</span>
           </Link>
         </Container>
-      </Col>
-      <Col md={6} className={`my-auto d-none d-md-block p-2 ${styles.SignUpCol}`}>
-        <Image className={`${appStyles.FillerImage}`} src={treeLogo} />
       </Col>
     </Row>
   );
