@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useHistory } from "react-router-dom";  
 import styles from "../../styles/SignInUpForm.module.css";
-import btnStyles from "../../styles/Button.module.css"
+import btnStyles from "../../styles/Button.module.css";
 
-
-import { Form, Button, Container, Alert } from "react-bootstrap";
+import { Form, Button, Container, Alert, Spinner } from "react-bootstrap";
 import axios from "axios";
+import { SetCurrentUserContext } from "../../App";
 
 const SignInForm = () => {
+  const setCurrentUser = useContext(SetCurrentUserContext);
+
   const [signInData, setSignInData] = useState({
     username: "",
     password: "",
@@ -15,8 +17,10 @@ const SignInForm = () => {
   const { username, password } = signInData;
 
   const [errors, setErrors] = useState({});
-  const history = useHistory();  
+  const [loading, setLoading] = useState(false); 
+  const history = useHistory();
 
+  // Handle input field changes
   const handleChange = (event) => {
     setSignInData({
       ...signInData,
@@ -24,13 +28,28 @@ const SignInForm = () => {
     });
   };
 
+  // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true); 
     try {
-      await axios.post("/dj-rest-auth/login/", signInData);
+      // Make the request to the backend with CSRF token and credentials
+      const { data } = await axios.post(
+        "https://art-drf-api-f47791898f85.herokuapp.com/dj-rest-auth/login/", 
+        signInData,
+        { withCredentials: true } 
+      );
+
+      // Store the auth token in localStorage
+      localStorage.setItem("authToken", data.key);
+
+      // Redirect to the home page after successful login
+      setCurrentUser(data.user);
       history.push("/home");  
     } catch (err) {
-    setErrors(err.response?.data);
+      setErrors(err.response?.data || { non_field_errors: ["An error occurred, please try again."] });
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -49,7 +68,7 @@ const SignInForm = () => {
               name="username"
               value={username}
               onChange={handleChange}
-          />
+            />
           </Form.Group>
           {errors.username?.map((message, idx) => (
             <Alert variant="warning" key={idx}>
@@ -77,8 +96,13 @@ const SignInForm = () => {
           <Button
             className={`${btnStyles.Button} ${btnStyles.Wide} ${btnStyles.Bright} w-100 mt-3`}
             type="submit"
+            disabled={loading} 
           >
-            Sign In
+            {loading ? (
+              <Spinner animation="border" size="sm" /> 
+            ) : (
+              "Sign In"
+            )}
           </Button>
 
           {errors.non_field_errors?.map((message, idx) => (
@@ -90,7 +114,7 @@ const SignInForm = () => {
 
         <div className="text-center mt-3">
           <Link className={styles.Link} to="/signup">
-            Don't have an account? <span>Sign up</span>
+            Don't have an account? <span>Sign up here!</span>
           </Link>
         </div>
       </div>
