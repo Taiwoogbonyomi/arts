@@ -22,9 +22,9 @@ const SignUpForm = () => {
     username: "",
     password1: "",
     password2: "",
-    profile_image: null, // New state for profile image
+    profile_image: null, 
   });
-  const [imagePreview, setImagePreview] = useState(null); // New state for image preview
+  const [imagePreview, setImagePreview] = useState(null);
   const { username, password1, password2, profile_image } = signUpData;
 
   const [errors, setErrors] = useState({});
@@ -46,14 +46,14 @@ const SignUpForm = () => {
       if (file) {
         const reader = new FileReader();
         reader.onloadend = () => {
-          setImagePreview(reader.result); // Set image preview URL
+          setImagePreview(reader.result); 
         };
-        reader.readAsDataURL(file); // Read the file as a Data URL (base64)
+        reader.readAsDataURL(file); 
       }
     } else {
       setSignUpData({
         ...signUpData,
-        [name]: value, // For other inputs, just update the value
+        [name]: value, 
       });
     }
   };
@@ -72,7 +72,7 @@ const SignUpForm = () => {
     try {
       await axios.post("/dj-rest-auth/registration/", formData, {
         headers: {
-          "Content-Type": "multipart/form-data", // Important to set the header for file upload
+          "Content-Type": "multipart/form-data", 
         },
       });
       history.push("/signin");
@@ -145,7 +145,7 @@ const SignUpForm = () => {
                 className={styles.Input}
                 type="file"
                 name="profile_image"
-                accept="image/*" // Restrict to image files only
+                accept="image/*"
                 onChange={handleChange}
               />
             </Form.Group>
