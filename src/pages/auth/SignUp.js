@@ -1,125 +1,93 @@
 import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { Form, Button, Col, Row, Container, Alert, Image, Spinner } from "react-bootstrap";
-import axios from "axios";
+import treeLogo from "../../assets/tree-logo-5191427_1280.webp";
 
 import styles from "../../styles/SignInUpForm.module.css";
 import btnStyles from "../../styles/Button.module.css";
 import appStyles from "../../App.module.css";
+
+import {
+  Form,
+  Button,
+  Image,
+  Col,
+  Row,
+  Container,
+  Alert,
+} from "react-bootstrap";
+import axios from "axios";
 
 const SignUpForm = () => {
   const [signUpData, setSignUpData] = useState({
     username: "",
     password1: "",
     password2: "",
-    profileImage: null,
+    profile_image: null, // New state for profile image
   });
+  const [imagePreview, setImagePreview] = useState(null); // New state for image preview
+  const { username, password1, password2, profile_image } = signUpData;
 
-  const { username, password1, password2, profileImage } = signUpData;
   const [errors, setErrors] = useState({});
-  const [preview, setPreview] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
 
   const history = useHistory();
 
-  // Handle input change and clear errors
   const handleChange = (event) => {
-    setSignUpData({
-      ...signUpData,
-      [event.target.name]: event.target.value,
-    });
+    const { name, value, files } = event.target;
 
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [event.target.name]: undefined,
-    }));
-  };
+    if (name === "profile_image") {
+      // Handle file input (image)
+      const file = files[0];
+      setSignUpData({
+        ...signUpData,
+        profile_image: file,
+      });
 
-  // Handle file selection and preview
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-
-    if (file) {
-      if (!["image/jpeg", "image/png"].includes(file.type)) {
-        setErrors({ profileImage: ["Only JPG and PNG files are allowed."] });
-        return;
+      // Create an image preview
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImagePreview(reader.result); // Set image preview URL
+        };
+        reader.readAsDataURL(file); // Read the file as a Data URL (base64)
       }
-      if (file.size > 2 * 1024 * 1024) {
-        setErrors({ profileImage: ["File size must be less than 2MB."] });
-        return;
-      }
-
-      setSignUpData({ ...signUpData, profileImage: file });
-
-      const reader = new FileReader();
-      reader.onloadend = () => setPreview(reader.result);
-      reader.readAsDataURL(file);
+    } else {
+      setSignUpData({
+        ...signUpData,
+        [name]: value, // For other inputs, just update the value
+      });
     }
   };
 
-  // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setLoading(true);
-    setSuccessMessage("");
-    setErrors({});
-
-    // Client-side validation
-    if (username.length < 3) {
-      setErrors({ username: ["Username must be at least 3 characters long."] });
-      setLoading(false);
-      return;
-    }
-    if (password1.length < 8) {
-      setErrors({ password1: ["Password must be at least 8 characters long."] });
-      setLoading(false);
-      return;
-    }
-    if (password1 !== password2) {
-      setErrors({ password2: ["Passwords must match."] });
-      setLoading(false);
-      return;
-    }
 
     const formData = new FormData();
     formData.append("username", username);
     formData.append("password1", password1);
     formData.append("password2", password2);
-
-    if (profileImage) {
-      formData.append("image", profileImage);
+    if (profile_image) {
+      formData.append("profile_image", profile_image);
     }
 
     try {
-      const response = await axios.post("/dj-rest-auth/registration/", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      await axios.post("/dj-rest-auth/registration/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Important to set the header for file upload
+        },
       });
-
-      // If registration is successful
-      setSuccessMessage("Registration successful! Please sign in.");
-      setTimeout(() => history.push("/signin"), 2000);
+      history.push("/signin");
     } catch (err) {
-      setErrors(err.response?.data || {});
-    } finally {
-      setLoading(false);
+      setErrors(err.response?.data);
     }
   };
 
   return (
-    <Row className={`${styles.Row} d-flex align-items-center justify-content-center min-vh-100`}>
-      <Col xs={12} md={6}>
-        <Container className={`${appStyles.Content} p-4`} style={{ maxWidth: "500px", minWidth: "320px" }}>
-          <h1 className={styles.Header}>Sign up for Art Connect</h1>
-
-          {/* Display success or error messages */}
-          {successMessage && <Alert variant="success">{successMessage}</Alert>}
-          {errors.non_field_errors?.map((message, idx) => (
-            <Alert key={idx} variant="warning" className="mt-3">{message}</Alert>
-          ))}
+    <Row className={styles.Row}>
+      <Col className="my-auto py-2 p-md-2" md={6}>
+        <Container className={`${appStyles.Content} p-4 `}>
+          <h1 className={styles.Header}>sign up</h1>
 
           <Form onSubmit={handleSubmit}>
-            {/* Username Field */}
             <Form.Group controlId="username">
               <Form.Label className="d-none">Username</Form.Label>
               <Form.Control
@@ -129,30 +97,14 @@ const SignUpForm = () => {
                 name="username"
                 value={username}
                 onChange={handleChange}
-                aria-describedby="username-help"
               />
             </Form.Group>
             {errors.username?.map((message, idx) => (
-              <Alert variant="warning" key={idx}>{message}</Alert>
+              <Alert variant="warning" key={idx}>
+                {message}
+              </Alert>
             ))}
 
-            {/* Profile Image Upload */}
-            <Form.Group controlId="profileImage">
-              <Form.Label>Profile Image</Form.Label>
-              <Form.Control
-                type="file"
-                name="profileImage"
-                onChange={handleFileChange}
-                className={styles.Input}
-                aria-describedby="profileImage-help"
-              />
-            </Form.Group>
-            {preview && <Image src={preview} alt="Profile Preview" className="mt-3" roundedCircle fluid />}
-            {errors.profileImage?.map((message, idx) => (
-              <Alert key={idx} variant="warning">{message}</Alert>
-            ))}
-
-            {/* Password Fields */}
             <Form.Group controlId="password1">
               <Form.Label className="d-none">Password</Form.Label>
               <Form.Control
@@ -162,15 +114,16 @@ const SignUpForm = () => {
                 name="password1"
                 value={password1}
                 onChange={handleChange}
-                aria-describedby="password1-help"
               />
             </Form.Group>
             {errors.password1?.map((message, idx) => (
-              <Alert key={idx} variant="warning">{message}</Alert>
+              <Alert key={idx} variant="warning">
+                {message}
+              </Alert>
             ))}
 
             <Form.Group controlId="password2">
-              <Form.Label className="d-none">Confirm password</Form.Label>
+              <Form.Label className="d-none">Confirm Password</Form.Label>
               <Form.Control
                 className={styles.Input}
                 type="password"
@@ -178,30 +131,62 @@ const SignUpForm = () => {
                 name="password2"
                 value={password2}
                 onChange={handleChange}
-                aria-describedby="password2-help"
               />
             </Form.Group>
             {errors.password2?.map((message, idx) => (
-              <Alert key={idx} variant="warning">{message}</Alert>
+              <Alert key={idx} variant="warning">
+                {message}
+              </Alert>
             ))}
 
-            {/* Submit Button */}
-            <Button className={`${btnStyles.Button} ${btnStyles.Wide} ${btnStyles.Bright}`} type="submit" disabled={loading}>
-              {loading ? (
-                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-              ) : (
-                "Sign up"
-              )}
+            <Form.Group controlId="profile_image">
+              <Form.Label>Profile Image</Form.Label>
+              <Form.Control
+                className={styles.Input}
+                type="file"
+                name="profile_image"
+                accept="image/*" // Restrict to image files only
+                onChange={handleChange}
+              />
+            </Form.Group>
+            {imagePreview && (
+              <div className="mt-3">
+                <Image
+                  src={imagePreview}
+                  alt="Profile Preview"
+                  roundedCircle
+                  style={{ width: "100px", height: "100px", objectFit: "cover" }}
+                />
+              </div>
+            )}
+            {errors.profile_image?.map((message, idx) => (
+              <Alert key={idx} variant="warning">
+                {message}
+              </Alert>
+            ))}
+
+            <Button
+              className={`${btnStyles.Button} ${btnStyles.Wide} ${btnStyles.Bright}`}
+              type="submit"
+            >
+              Sign up
             </Button>
+            {errors.non_field_errors?.map((message, idx) => (
+              <Alert key={idx} variant="warning" className="mt-3">
+                {message}
+              </Alert>
+            ))}
           </Form>
         </Container>
 
-        {/* Sign-in Link */}
-        <Container className={`mt-3 ${appStyles.Content}`} style={{ maxWidth: "320px" }}>
+        <Container className={`mt-3 ${appStyles.Content}`}>
           <Link className={styles.Link} to="/signin">
             Already have an account? <span>Sign in</span>
           </Link>
         </Container>
+      </Col>
+      <Col md={6} className={`my-auto d-none d-md-block p-2 ${styles.SignUpCol}`}>
+        <Image className={`${appStyles.FillerImage}`} src={treeLogo} />
       </Col>
     </Row>
   );
