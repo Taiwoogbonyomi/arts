@@ -1,8 +1,9 @@
 import axios from "axios";
 
-axios.defaults.baseURL = 'https://art-drf-api-f47791898f85.herokuapp.com/'
-axios.defaults.headers.post['Content-Type'] = 'multipart/form-data'
+axios.defaults.baseURL = 'https://art-drf-api-f47791898f85.herokuapp.com/';
+axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
 axios.defaults.withCredentials = true;
+
 
 
 export const axiosReq = axios.create();

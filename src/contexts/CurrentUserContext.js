@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { axiosReq, axiosRes } from "../api/axiosDefaults";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 
 export const CurrentUserContext = createContext();
 export const SetCurrentUserContext = createContext();
@@ -13,12 +13,14 @@ export const CurrentUserProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const history = useHistory();
 
+  // Handle fetching current user when component mounts
   const handleMount = async () => {
     try {
       const { data } = await axiosRes.get("dj-rest-auth/user/");
       setCurrentUser(data);
     } catch (err) {
       console.log(err);
+      // If user isn't logged in, you could handle a fallback here (like redirecting)
     }
   };
 
@@ -29,16 +31,14 @@ export const CurrentUserProvider = ({ children }) => {
   useMemo(() => {
     axiosReq.interceptors.request.use(
       async (config) => {
-        try {
-          await axios.post("/dj-rest-auth/token/refresh/");
-        } catch (err) {
-          setCurrentUser((prevCurrentUser) => {
-            if (prevCurrentUser) {
-              history.push("/signin");
-            }
-            return null;
-          });
-          return config;
+        // Check if the user is logged in before trying to refresh the token
+        if (currentUser) {
+          try {
+            await axios.post("/dj-rest-auth/token/refresh/");
+          } catch (err) {
+            setCurrentUser(null);
+            history.push("/signin");
+          }
         }
         return config;
       },
@@ -52,21 +52,20 @@ export const CurrentUserProvider = ({ children }) => {
       async (err) => {
         if (err.response?.status === 401) {
           try {
-            await axios.post("/dj-rest-auth/token/refresh/");
+            // Refresh the token
+            const { data } = await axios.post("/dj-rest-auth/token/refresh/");
+            // Update the access token (you can store it in cookies, localStorage, or in state)
+            axios.defaults.headers['Authorization'] = `Bearer ${data.access}`;
           } catch (err) {
-            setCurrentUser((prevCurrentUser) => {
-              if (prevCurrentUser) {
-                history.push("/signin");
-              }
-              return null;
-            });
+            setCurrentUser(null);  // If token refresh fails, log out
+            history.push("/signin");
           }
-          return axios(err.config);
+          return axios(err.config);  // Retry original request after refresh
         }
         return Promise.reject(err);
       }
     );
-  }, [history]);
+  }, [history, currentUser]);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
