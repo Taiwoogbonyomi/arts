@@ -20,7 +20,6 @@ export const CurrentUserProvider = ({ children }) => {
       setCurrentUser(data);
     } catch (err) {
       console.log(err);
-      // If user isn't logged in, you could handle a fallback here (like redirecting)
     }
   };
 
@@ -31,7 +30,6 @@ export const CurrentUserProvider = ({ children }) => {
   useMemo(() => {
     axiosReq.interceptors.request.use(
       async (config) => {
-        // Check if the user is logged in before trying to refresh the token
         if (currentUser) {
           try {
             await axios.post("/dj-rest-auth/token/refresh/");
@@ -52,15 +50,13 @@ export const CurrentUserProvider = ({ children }) => {
       async (err) => {
         if (err.response?.status === 401) {
           try {
-            // Refresh the token
             const { data } = await axios.post("/dj-rest-auth/token/refresh/");
-            // Update the access token (you can store it in cookies, localStorage, or in state)
             axios.defaults.headers['Authorization'] = `Bearer ${data.access}`;
           } catch (err) {
-            setCurrentUser(null);  // If token refresh fails, log out
+            setCurrentUser(null);  
             history.push("/signin");
           }
-          return axios(err.config);  // Retry original request after refresh
+          return axios(err.config);
         }
         return Promise.reject(err);
       }

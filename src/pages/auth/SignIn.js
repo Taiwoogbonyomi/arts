@@ -27,17 +27,28 @@ function SignInForm() {
   const { username, password } = signInData;
 
   const [errors, setErrors] = useState({});
-
   const history = useHistory();
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
       const { data } = await axios.post("/dj-rest-auth/login/", signInData);
+
+      // ✅ Save tokens to localStorage
+      localStorage.setItem("accessToken", data.access);
+      localStorage.setItem("refreshToken", data.refresh);
+
+      // ✅ Set the Authorization header globally
+      axios.defaults.headers.common["Authorization"] = `Bearer ${data.access}`;
+
+      // ✅ Set current user
       setCurrentUser(data.user);
+
+      // ✅ Redirect to homepage
       history.push("/");
     } catch (err) {
-      setErrors(err.response?.data);
+      setErrors(err.response?.data || { non_field_errors: ["Login failed"] });
     }
   };
 
