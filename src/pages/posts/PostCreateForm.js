@@ -21,14 +21,12 @@ import { axiosReq } from "../../api/axiosDefaults";
 
 function PostCreateForm() {
   const [errors, setErrors] = useState({});
-
   const [postData, setPostData] = useState({
     title: "",
     content: "",
     image: "",
   });
   const { title, content, image } = postData;
-
   const imageInput = useRef(null);
   const history = useHistory();
 
@@ -77,13 +75,18 @@ function PostCreateForm() {
           name="title"
           value={title}
           onChange={handleChange}
+          required
         />
       </Form.Group>
-      {errors?.title?.map((message, idx) => (
-        <Alert variant="warning" key={idx}>
-          {message}
+      {errors?.title && (
+        <Alert variant="warning">
+          <ul>
+            {errors.title.map((msg, idx) => (
+              <li key={idx}>{msg}</li>
+            ))}
+          </ul>
         </Alert>
-      ))}
+      )}
 
       <Form.Group>
         <Form.Label>Content</Form.Label>
@@ -93,13 +96,18 @@ function PostCreateForm() {
           name="content"
           value={content}
           onChange={handleChange}
+          required
         />
       </Form.Group>
-      {errors?.content?.map((message, idx) => (
-        <Alert variant="warning" key={idx}>
-          {message}
+      {errors?.content && (
+        <Alert variant="warning">
+          <ul>
+            {errors.content.map((msg, idx) => (
+              <li key={idx}>{msg}</li>
+            ))}
+          </ul>
         </Alert>
-      ))}
+      )}
 
       <Button
         className={`${btnStyles.Button} ${btnStyles.Blue}`}
@@ -147,18 +155,23 @@ function PostCreateForm() {
                 </Form.Label>
               )}
 
-              <Form.File
+              <Form.Control
+                type="file"
                 id="image-upload"
                 accept="image/*"
                 onChange={handleChangeImage}
                 ref={imageInput}
               />
             </Form.Group>
-            {errors?.image?.map((message, idx) => (
-              <Alert variant="warning" key={idx}>
-                {message}
+            {errors?.image && (
+              <Alert variant="warning">
+                <ul>
+                  {errors.image.map((msg, idx) => (
+                    <li key={idx}>{msg}</li>
+                  ))}
+                </ul>
               </Alert>
-            ))}
+            )}
 
             <div className="d-md-none">{textFields}</div>
           </Container>
