@@ -163,7 +163,7 @@ function PostCreateForm() {
                 ref={imageInput}
               />
             </Form.Group>
-            {errors?.image && (
+             {errors?.image && (
               <Alert variant="warning">
                 <ul>
                   {errors.image.map((msg, idx) => (
