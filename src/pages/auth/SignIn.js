@@ -31,27 +31,27 @@ function SignInForm() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+  
     try {
       const { data } = await axios.post("/dj-rest-auth/login/", signInData);
-
-      // ✅ Save tokens to localStorage
-      localStorage.setItem("accessToken", data.access);
-      localStorage.setItem("refreshToken", data.refresh);
-
-      // ✅ Set the Authorization header globally
-      axios.defaults.headers.common["Authorization"] = `Bearer ${data.access}`;
-
-      // ✅ Set current user
-      setCurrentUser(data.user);
-
-      // ✅ Redirect to homepage
-      history.push("/");
+  
+      if (data.access && data.refresh) {  // ✅ Ensure tokens exist
+        localStorage.setItem("accessToken", data.access);
+        localStorage.setItem("refreshToken", data.refresh);
+  
+        axios.defaults.headers.common["Authorization"] = `Bearer ${data.access}`;
+  
+        setCurrentUser(data.user);  // ✅ Save user data
+        history.push("/");
+      } else {
+        throw new Error("Tokens not returned from API");
+      }
     } catch (err) {
+      console.error("Login failed:", err);
       setErrors(err.response?.data || { non_field_errors: ["Login failed"] });
     }
   };
-
+  
   const handleChange = (event) => {
     setSignInData({
       ...signInData,

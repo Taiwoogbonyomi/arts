@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState, useCallback } from "react";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { axiosReq, axiosRes } from "../api/axiosDefaults";
 import { useHistory } from "react-router-dom";
@@ -13,39 +13,42 @@ export const CurrentUserProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const history = useHistory();
 
-  
-  // Function to refresh the token
-  // Use useCallback to prevent function recreation
+  /** 🔄 Refresh Access Token */
   const refreshToken = useCallback(async () => {
     try {
-      const { data } = await axios.post("/dj-rest-auth/token/refresh/");
-      localStorage.setItem("accessToken", data.access); // Store new token
+      const refresh = localStorage.getItem("refreshToken");
+      if (!refresh) throw new Error("No refresh token available");
+
+      const { data } = await axios.post("/dj-rest-auth/token/refresh/", { refresh });
+      localStorage.setItem("accessToken", data.access);
       axios.defaults.headers["Authorization"] = `Bearer ${data.access}`;
       return data.access;
     } catch (err) {
+      console.error("Token refresh failed", err);
       setCurrentUser(null);
-      localStorage.removeItem("accessToken"); // Clear token if refresh fails
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken"); 
       history.push("/signin");
       return null;
     }
   }, [history]);
 
-  // Fetch the current user on mount
-  const handleMount = async () => {
-    try {
-      const { data } = await axiosRes.get("/dj-rest-auth/user/");
-      setCurrentUser(data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
+  /** 🎭 Fetch the current user on mount */
   useEffect(() => {
+    const handleMount = async () => {
+      try {
+        const { data } = await axiosRes.get("/dj-rest-auth/user/");
+        setCurrentUser(data);
+      } catch (err) {
+        console.log("User fetch failed", err);
+      }
+    };
     handleMount();
   }, []);
 
-  useMemo(() => {
-    axiosReq.interceptors.request.use(
+  /** 🔄 Set up Axios Interceptors */
+  useEffect(() => {
+    const requestInterceptor = axiosReq.interceptors.request.use(
       async (config) => {
         const token = localStorage.getItem("accessToken");
         if (token) {
@@ -56,7 +59,7 @@ export const CurrentUserProvider = ({ children }) => {
       (err) => Promise.reject(err)
     );
 
-    axiosRes.interceptors.response.use(
+    const responseInterceptor = axiosRes.interceptors.response.use(
       (response) => response,
       async (err) => {
         if (err.response?.status === 401) {
@@ -69,6 +72,11 @@ export const CurrentUserProvider = ({ children }) => {
         return Promise.reject(err);
       }
     );
+
+    return () => {
+      axiosReq.interceptors.request.eject(requestInterceptor);
+      axiosRes.interceptors.response.eject(responseInterceptor);
+    };
   }, [refreshToken]);
 
   return (
