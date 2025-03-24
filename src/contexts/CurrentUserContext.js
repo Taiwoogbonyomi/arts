@@ -62,7 +62,7 @@ export const CurrentUserProvider = ({ children }) => {
     const responseInterceptor = axiosRes.interceptors.response.use(
       (response) => response,
       async (err) => {
-        if (err.response?.status === 401) {
+        if (err.response?.status === 401 && localStorage.getItem("refreshToken")) {
           const newToken = await refreshToken();
           if (newToken) {
             err.config.headers["Authorization"] = `Bearer ${newToken}`;
