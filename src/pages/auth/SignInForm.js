@@ -16,6 +16,7 @@ import styles from "../../styles/SignInUpForm.module.css";
 import btnStyles from "../../styles/Button.module.css";
 import appStyles from "../../App.module.css";
 import { useSetCurrentUser } from "../../contexts/CurrentUserContext";
+import { setTokenTimestamp } from "../../utils/utils";
 
 function SignInForm() {
   const setCurrentUser = useSetCurrentUser();
@@ -34,21 +35,11 @@ function SignInForm() {
   
     try {
       const { data } = await axios.post("/dj-rest-auth/login/", signInData);
-  
-      if (data.access && data.refresh) {  // ✅ Ensure tokens exist
-        localStorage.setItem("accessToken", data.access);
-        localStorage.setItem("refreshToken", data.refresh);
-  
-        axios.defaults.headers.common["Authorization"] = `Bearer ${data.access}`;
-  
-        setCurrentUser(data.user);  // ✅ Save user data
-        history.push("/");
-      } else {
-        throw new Error("Tokens not returned from API");
-      }
+      setCurrentUser(data.user);
+      setTokenTimestamp(data);
+      history.goBack();
     } catch (err) {
-      console.error("Login failed:", err);
-      setErrors(err.response?.data || { non_field_errors: ["Login failed"] });
+      setErrors(err.response?.data);
     }
   };
   
@@ -64,7 +55,6 @@ function SignInForm() {
       <Col className="my-auto p-0 p-md-2" md={{ span: 8, offset: 2 }}>
         <Container className={`${appStyles.Content} p-4`}>
           <h1 className={styles.Header}>sign in</h1>
-
           <Form onSubmit={handleSubmit}>
             <Form.Group controlId="username">
               <Form.Label className="d-none">Username</Form.Label>

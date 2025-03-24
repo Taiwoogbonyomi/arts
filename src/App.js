@@ -3,9 +3,10 @@ import NavBar from "./components/NavBar";
 import Container from "react-bootstrap/Container";
 import { Route, Switch } from "react-router-dom";
 import "./api/axiosDefaults";
-import SignUpForm from "./pages/auth/SignUp";
-import SignInForm from "./pages/auth/SignIn";
+import SignUpForm from "./pages/auth/SignUpForm";
+import SignInForm from "./pages/auth/SignInForm";
 import PostCreateForm from "./pages/posts/PostCreateForm";
+import PostPage from "./pages/posts/PostPage";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route exact path="/signin" render={() => <SignInForm />} />
           <Route exact path="/signup" render={() => <SignUpForm />} />
           <Route exact path="/create-post" render={() => <PostCreateForm />} />
+          <Route exact path="/posts/:id" render={() => <PostPage />}/>
           <Route render={() => <p>Page not found!</p>} />
         </Switch>
       </Container>
