@@ -15,22 +15,29 @@ const ThreeDots = React.forwardRef(({ onClick }, ref) => (
 
 console.log('ThreeDots: ', ThreeDots)
 
-export const MoreDropdown = () => {
-    return(
-        <Dropdown>
-          <Dropdown.Toggle as={ThreeDots} id="dropdown-custom-components">
-            Custom toggle
-          </Dropdown.Toggle>
-      
-          <Dropdown.Menu >
-            <Dropdown.Item eventKey="1">Red</Dropdown.Item>
-            <Dropdown.Item eventKey="2">Blue</Dropdown.Item>
-            <Dropdown.Item eventKey="3" active>
-              Orange
-            </Dropdown.Item>
-            <Dropdown.Item eventKey="1">Red-Orange</Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-    );
-};
+export const MoreDropdown = ({ handleEdit, handleDelete }) => {
+    return (
+      <Dropdown className="ml-auto" drop="left">
+        <Dropdown.Toggle as={ThreeDots} />
   
+        <Dropdown.Menu
+          className="text-center"
+        >
+          <Dropdown.Item
+            className={styles.DropdownItem}
+            onClick={handleEdit}
+            aria-label="edit"
+          >
+            <i className="fas fa-pencil-alt"></i>
+          </Dropdown.Item>
+          <Dropdown.Item
+            className={styles.DropdownItem}
+            onClick={handleDelete}
+            aria-label="delete"
+          >
+            <i className="fas fa-trash-alt" />
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+    );
+  };
