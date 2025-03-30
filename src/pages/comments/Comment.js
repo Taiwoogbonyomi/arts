@@ -7,13 +7,17 @@ import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { MoreDropdown } from '../../components/MoreDropdown';
 import { axiosRes } from '../../api/axiosDefaults';
 import CommentEditForm from "./CommentEditForm";
+import {OverlayTrigger, Tooltip} from "react-bootstrap";
 
 const Comment = (props) => {
-    const { profile_id, profile_image, owner, updated_at, content, id, setPost, setComments} = props;
+    const { profile_id, profile_image, owner, updated_at, content, id, setPost, setComments, likes_count, like_id } = props;
     const [showEditForm, setShowEditForm] = useState(false);
 
     const currentUser = useCurrentUser();
     const is_owner = currentUser?.username === owner;
+
+    const [commentsLikes, setCommentsLikes] = useState(like_id);
+    const [commentsLikesCount, setCommentsLikesCount] = useState(likes_count);
 
     const handleDelete = async () => {
         try {
@@ -33,6 +37,23 @@ const Comment = (props) => {
           }));
         } catch (err) {}
       };
+
+      
+    const handleLike = async () => {
+        try {
+            const { data } = await axiosRes.post("/commentslikes/", { comment: id });
+            setCommentsLikes(data.id);
+            setCommentsLikesCount(commentsLikesCount + 1);
+        } catch (err) {}
+    };
+
+    const handleUnlike = async () => {
+        try {
+            await axiosRes.delete(`/commentslikes/${id}/`);
+            setCommentsLikes(null);
+            setCommentsLikesCount(commentsLikesCount - 1);
+        } catch (err) {}
+    };
 
     return (
         <div>
@@ -56,6 +77,32 @@ const Comment = (props) => {
                 ) : ( 
                 <p>{content}</p>
                 )}
+                 <div>
+                {is_owner ? (
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={<Tooltip>You can't like your own comment!</Tooltip>}
+                  >
+                    <i className={`far fa-heart ${styles.HeartOutline}`} />
+                  </OverlayTrigger>
+                ) : commentsLikes ? (
+                  <span onClick={handleUnlike}>
+                    <i className={`fas fa-heart ${styles.Heart}`} />
+                  </span>
+                ) : currentUser ? (
+                  <span onClick={handleLike}>
+                    <i className={`far fa-heart ${styles.HeartOutline}`} />
+                  </span>
+                ) : (
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={<Tooltip>Log in to like comments!</Tooltip>}
+                  >
+                    <i className={`far fa-heart ${styles.HeartOutline}`} />
+                  </OverlayTrigger>
+                )}
+                {commentsLikesCount}
+              </div>
             </Media.Body>
             {is_owner && (
                 <MoreDropdown 
