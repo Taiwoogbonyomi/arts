@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { createContext } from "react";
 import { axiosReq } from "../api/axiosDefaults";
+import { useCurrentUser } from "./CurrentUserContext";
 
 const ProfileDataContext = createContext();
 const SetProfileDataContext = createContext();
@@ -12,10 +13,11 @@ export const useSetProfileData = () => useContext(SetProfileDataContext);
 
 export const ProfileDataProvider = ({ children }) => {
     const [profileData, setProfileData] = useState({
-  
       pageProfile: { results: [] },
       popularProfiles: { results: [] },
     });
+
+    const currentUser = useCurrentUser();
 
     useEffect(() => {
         const handleMount = async () => {
@@ -27,20 +29,16 @@ export const ProfileDataProvider = ({ children }) => {
               ...prevState,
               popularProfiles: data,
             }));
-          } catch (err) {
-          }
+          } catch (err) {}
         };
-    
         handleMount();
-      }, [currentUser]);
-    
-      return (
+    }, [currentUser]);
+
+    return (
         <ProfileDataContext.Provider value={profileData}>
-          <SetProfileDataContext.Provider value={{ setProfileData, handleFollow, handleUnfollow }}>
+          <SetProfileDataContext.Provider value={setProfileData}>
             {children}
           </SetProfileDataContext.Provider>
         </ProfileDataContext.Provider>
-      );
-    };
-    
-  
+    );
+};
