@@ -43,6 +43,29 @@ export const ProfileDataProvider = ({ children }) => {
     }
   };
 
+  const handleUnfollow = async (clickedProfile) => {
+    try {
+      await axiosRes.delete(`/followers/${clickedProfile.following_id}/`);
+
+      setProfileData((prevState) => ({
+        ...prevState,
+        pageProfile: {
+          results: prevState.pageProfile.results.map((profile) =>
+            unfollowHelper(profile, clickedProfile)
+          ),
+        },
+        popularProfiles: {
+          ...prevState.popularProfiles,
+          results: prevState.popularProfiles.results.map((profile) =>
+            unfollowHelper(profile, clickedProfile)
+          ),
+        },
+
+      }));
+    } catch (err) {
+    }
+  };
+
   useEffect(() => {
     const handleMount = async () => {
       try {
@@ -63,7 +86,7 @@ export const ProfileDataProvider = ({ children }) => {
 
   return (
     <ProfileDataContext.Provider value={profileData}>
-      <SetProfileDataContext.Provider value={{ setProfileData, handleFollow }}>
+      <SetProfileDataContext.Provider value={{ setProfileData, handleFollow , }}>
         {children}
       </SetProfileDataContext.Provider>
     </ProfileDataContext.Provider>
