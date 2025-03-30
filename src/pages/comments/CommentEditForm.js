@@ -4,7 +4,7 @@ import { axiosRes } from "../../api/axiosDefaults";
 import styles from "../../styles/CommentCreateEditForm.module.css"
 
 function CommentEditForm(props) {
-  const { id, content, setShowEditForm, setComments } = props;
+    const { id, content = "", setShowEditForm, setComments } = props;
 
   const [formContent, setFormContent] = useState(content);
 
@@ -49,7 +49,7 @@ function CommentEditForm(props) {
       <div className="text-right">
       <button
           className={styles.Button}
-          disabled={!content.trim()}
+          disabled={!formContent.trim()}
           type="submit"
         >
           Save
