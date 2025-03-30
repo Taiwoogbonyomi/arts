@@ -17,7 +17,7 @@ const Comment = (props) => {
     const is_owner = currentUser?.username === owner;
 
     const [commentsLikes, setCommentsLikes] = useState(like_id);
-    const [commentsLikesCount, setCommentsLikesCount] = useState(likes_count);
+    const [commentsLikesCount, setCommentsLikesCount] = useState(likes_count || 0);
 
     const handleDelete = async () => {
         try {
@@ -43,15 +43,16 @@ const Comment = (props) => {
         try {
             const { data } = await axiosRes.post("/commentslikes/", { comment: id });
             setCommentsLikes(data.id);
-            setCommentsLikesCount(commentsLikesCount + 1);
+            setCommentsLikesCount((prev) => (typeof prev === "number" ? prev + 1 : 1));
         } catch (err) {}
     };
 
     const handleUnlike = async () => {
         try {
-            await axiosRes.delete(`/commentslikes/${id}/`);
+            await axiosRes.delete(`/commentslikes/${commentsLikes}/`);
             setCommentsLikes(null);
-            setCommentsLikesCount(commentsLikesCount - 1);
+            setCommentsLikesCount((prev) => Math.max((typeof prev === "number" ? prev - 1 : 0), 0));
+
         } catch (err) {}
     };
 
