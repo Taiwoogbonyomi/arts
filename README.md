@@ -171,5 +171,172 @@ Once logged in, the user will see additional icons and be able to navigate to th
 - Notifications – Implement real-time notifications for likes, comments, follows, and event invites.
 - Saved Posts – Users can bookmark favorite artworks to a "Saved" section.
 -  Virtual Art Exhibitions – Host online art galleries or digital showcases.
+
 [Back to top](<#table-of-contents>)
+
+
+# **Technologies Used**
+
+## Languages
+
+* [HTML5](https://en.wikipedia.org/wiki/HTML) - Used for content and structure of the website.
+* [CSS3](https://en.wikipedia.org/wiki/CSS) - Used for styling of pages.
+* [JavaScript](https://en.wikipedia.org/wiki/JavaScript) - Provides interactive elements of the website.
+* [React.js](https://en.wikipedia.org/wiki/React_(software)) - Used to develop frontend components.
+
+## Frameworks & Software
+* [React Bootstrap](https://react-bootstrap.github.io/) - A CSS framework used to aid the developer in creating responsive, mobile-first websites.
+* [GitHub](https://github.com/) - Hosts both the frontend and backend repositories for this project. Stores commit history and manages project boards for user stories.
+* [Heroku](https://en.wikipedia.org/wiki/Heroku) - A cloud platform that houses this deployed application, both frontend and backend.
+* [Lighthouse](https://developer.chrome.com/docs/lighthouse/overview/) - Used to test site performance.
+* [UI Dev Amiresponsive](https://ui.dev/amiresponsive) - Used to check responsiveness of this application on various device sizes.
+* [Favicon](https://favicon.io/) - Used to create the favicon.
+* [Google Chrome DevTools](https://developer.chrome.com/docs/devtools/) - Used to test app responsiveness and debug.
+* [Cloudinary](https://cloudinary.com/) - Used to host all image files for this application.
+* [HTML Validation](https://validator.w3.org/) - Validate HTML code in this project.
+* [CSS Validation](https://jigsaw.w3.org/css-validator/) - Validate CSS code in this project.
+* [JSHint Validation](https://jshint.com/) - Validate JavaScript code in this project.
+
+## Libraries
+
+* [NPM React-star-rating](https://www.npmjs.com/package/react-simple-star-rating) - Component used to incorporate the star-rating system for the Reviews section of this application.
+
+[Back to top](<#table-of-contents>)
+
+# Frontend Testing
+
+## Table of Contents
+
+* [**Testing**](<#testing>)
+
+## Code Validation
+### HTML, CSS and JavaScript validation
+HTML validation was done using the [W3C HTML Validator](https://validator.w3.org/). No error was found
+<details><summary>HTML Score</summary>
+
+Validation score![HTML Validation Score](./src/images/Html-validator.png)
+
+</details><br/> 
+
+CSS files were validated through the [Jigsaw validator](https://jigsaw.w3.org/css-validator/). all pages passed with no errors.
+<details><summary>CSS Score</summary>
+
+![CSS Validation Score](./src/images/css-validator.png)
+</details><br/> 
+
+
+JavaScript files were manually validated and errors resolved throughout the development process through feedback from the gitpod terminal. 
+
+Files were also manually run through [JS Hint](https://jshint.com/). Though no errors were found, a few 'warnings' were present on various pages. These were largely in relation to the version of ES used:
+
+- Unclosed regular expression.
+- 'Async functions' is only available in ES8 (use 'esversion: 8').
+- 'Object spread property' is only available in ES9 (use 'esversion: 9').
+- 'Optional chaining' is only available in ES11 (use 'esversion: 11').
+
+[Back to top](<#table-of-contents>)
+
+### Lighthouse Testing
+
+Lighthouse testing was performed through the Google Chrome Developer Tools was used to test the application's *Performance*, *Accessibility*, *Best Practices* and *SEO* as a logged-in user on a desktop device. 
+
+The performace score was rather poor, this was largely due to the extensions on chrome. This score could be improved in future iterations by compressing the images before uploading them.
+
+<details><summary>Lighthouse Score</summary>
+
+![Lighthouse Score](./src/images/lighthouse-check.png)
+</details><br/> 
+
+## Manual Testing
+### Sign up
+- The sign up page includes a form for registering new users.
+- Filling out a valid form (including username and password) posts the data to the API and creates a new user.
+- Filling out a valid form redirects the user to the Sign in page.
+- Filling out an invalid form notifies the user what changes they need to make, which can be: leaving a field blank, too short or too common a password or passwords not matching.
+        
+    ![Blank Fields](./src/images/short-password.png)
+        
+[Back to top](<#table-of-contents>)
+
+### Sign in
+- The page displays a simple form where a previously registered user can log into their account
+- Filling out a valid forms will allow the user to access the website, where they will be redirected to the homepage.
+- Filling out an invalid form alerts the user of the changes they need to make:
+    - Credentials don't match
+    ![Blank Fields](./src/images/wrong-credentials.png)
+    - Field(s) left blank
+    ![Blank Fields](./src/images/blank-field.png)
+- The form is fully responsive on various screen sizes and includes an image on larger sizes. On smaller devices, the image disappears.
+- A link at the bottom allows users to be redirected to the sign up page if they don't have an existing account.
+
+[Back to top](<#table-of-contents>)
+
+### Navigation Bar
+### Non-registered and non logged-in users
+- The navbar is shown with links to the homepage, sign up and sign in pages.
+- All three links redirect the user to the appropriate page, while clicking the site logo redirects them to the homepage.
+- The navbar is responsive and collapses into a hamburger dropdown menu on smaller device screens.
+
+### Registered and logged-in users
+- When the user is logged into their account, the navigation bar includes the pages: 'Create a Post', 'Timeline', 'Liked', 'Sign out' and 'Profile'. 
+- The profile page includes the user's avatar image (or a default image). Clicking the avatar image will redirect the user to their profile page.
+- All links in the navigation have been tested and properly redirect the user to the appropriate page. 
+- The navbar is responsive and collapses into a hamburger dropdown menu on smaller device screens.
+
+## Homepage 
+## Create a Post
+- By clicking the 'Create post' icon next to the site name, the user can access the form to create a post. This link is present in the navbar on all pages. On smaller device screens it appears alone between the site icon and the hamburger dropdown menu.
+- The form features three fields: a mandatory title, an optional description and a mandatory image upload. Not filling out one of the mandatory fields will alert the user or an error and ask them to rectify it. 
+- Once an image has been loaded, a 'change the image' button will appear, allowing the user to click and select a different image to display.
+- Once the 'create' button is clicked, the form is submitted, the data is saved to the backend API and the event appears on the frontend website.
+- Clicking the cancel button will send no information to the backend API and the user will be redirected to page they were previously on.
+
+
+[Back to top](<#table-of-contents>)
+
+# **Deployment**
+
+### Deployment to Heroku
+1. Log into your heroku account, select Create New App, and name it something unique to this project.
+2. Select the region corresponding to where you are and click 'Create App'.
+3. Click the 'Deploy' tab and select GitHub as the 'deployment method'.
+4. Search for your project repository and click 'Connect'.
+4. Click 'Deploy Branch' for Heroku to start the build process.
+5. If the build is successful, you'll see the 'build succeeded' message. Click 'Open App' to view your live Heroku application in the browser.
+
+### Connect the React Frontend to the backend API
+
+After the workspace is set up and the Heroku deployment successful, you can connect the workspace to the backend API.
+
+1. Go to the API application settings from the Heroku dashboard.
+2. In the 'Settings' tab, click on 'Reveal Config Vars' and add 'CLIENT_ORIGIN'. Set that to the URL for the deployed React frontend application.
+3. Add an additional Config Var, 'CLIENT_ORIGIN_DEV', and paste in the URL of your local gitpod workspace, making sure to exclue the '/' at the end of the URL.
+4. Go back to your frontend gitpod workspace and install the Axios library using the command 'npm install axios'.
+5. Create a folder called 'API' and within that, a file called 'axiosDefaults'.
+6. Import axios at the top of the file.
+7. Define the baseURL, which is the URL from the deployed Heroku backend API project.
+8. Set the content-type header to multi-part/form-data since the API will have to deal with both images and text in the requests.
+9. To avoid any CORS issues, set withCredentials to True.
+10. Import this file into App.js to be used throughout the application.
+
+### Fork this Project Repository
+
+For others to be able to work independently furthering this project, they can fork the GitHub repository from the GitHub account. The copy can then be viewed and worked on without changing the original. To fork the repository, log into GitHub and locate the repository, At the top right of the page, you'll see a 'Fork' button. Click that button to create a fork of the original repository. 
+
+### Clone this Project Repository
+Another option is to clone the repository, which will link the copy to the original and syncronize the updates. To do this, click the 'Code' button within the selected repository and then choose 'Clone' from the dropdown menu.
+
+
+
+[Back to top](<#table-of-contents>)
+
+# **Credits**
+
+*[Pixabay](https://pixabay.com/) -  Some images were obtained through a pixabay and are only used for the purpose of this project. while the other artworks were done by my husband .
+
+* Some of the codes used were from the walkthrough video of the moment app made by Code institute
+
+
+
+
 
