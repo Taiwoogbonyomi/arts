@@ -135,4 +135,41 @@ As the developer I can create a followers section so that registered, logged in 
 
  The Art connect blog is interactive, both for non registered, non logged-in users and for users signed into their account. Depending on login status different pages are available for the user. When the user is logged out the pages: Home, and Sign In or Up are available from the Navigation Bar menu. When the user is logged in, Home, Timeline,Signout and Profile Page also become available.
 
- 
+
+ # **Existing Features**
+
+* ## Navigation
+
+The navigation bar is straight forward and easy to interact with. Depending on the user's log-in status, different icons for different pages are visible. When navigating from a tablet or mobile device, the full navigation bar becomes a hamburger dropdown menu with the site icon to the far left.
+
+For first time users and for those who are logged out of their account, the following menu is visible:
+
+* Art Connect blog name - On the far left hand side of the navigation bar users can see the name of the blog. Clicking the name will return the user to the homepage.
+* Homepage - The first menu icon and the landing page of the site is the homepage. Here, the user can see all posts, their descriptions and view any comments. At the top, there is a search field where users can search an activity by keyword or author, while on the right-hand side, there is a section of most followed profiles.
+* Authentication - Users can either sign up for an account or sign into their existing one. Clicking either of these icons will take users to the corresponding page.
+
+Once logged in, the user will see additional icons and be able to navigate to those pages. Those include:
+
+* Timeline - Here users can see a list of post made by people they follow. To the right, they have a section of 'most followed profiles' and just under the navigation bar, a search bar is visible where users can search by keyword or by author.
+* Liked - This page shows all the posts that the logged-in users has 'liked'. Clicking again on the heart icon will 'unlike' the activity and it will be removed from this page upon refresh. 
+* Comment - This is located just under the ppost and logged-in users can comment on a post and their posts can also be liked.
+* Authentication - The only icon that appears for logged-in usres is the 'sign out' icon, which will log the user out if clicked and return them to the homepage.
+* Profile - This is the user's own profile that will show their avatar image if they uploaded one. If not, a default avatar image will be displayed. Clicking the avatar will bring them to their profile page where they can see all artworks and events they posted and update their profile. Users can change their username or password and edit their profile, updating the avatar image and their bio information.
+
+
+[Back to top](<#table-of-contents>)
+
+
+# **Future Implementations**
+
+- Delete Confirmation - Confirming a delete before executing it is an aspect that would be beneficial to this website. At the moment, users can delete posts, comments and reviews with just one click of a button. A tool tip or other pop-up message asking the user if they're sure they want to delete would be a safer way to erase information, helping to guard against accidental deletes and therefore, loss of data.
+- Image Galleries – Allow users to create albums or collections of their artworks.
+- Image Filters & Editing – Integrate basic photo filters and editing (e.g., cropping, brightness adjustment).
+- Video Uploads – Allow users to share time-lapse painting videos or art tutorials.
+- Comment Replies & Threads – Allow users to reply to comments in a nested format.
+- Tagging & Mentions – Users can tag other artists using @username in posts and comments.
+- Notifications – Implement real-time notifications for likes, comments, follows, and event invites.
+- Saved Posts – Users can bookmark favorite artworks to a "Saved" section.
+-  Virtual Art Exhibitions – Host online art galleries or digital showcases.
+[Back to top](<#table-of-contents>)
+
