@@ -82,52 +82,28 @@ The goal of the Art Blog site is to create a vibrant online community for artist
 
 
 ## User Stories
-Like with the backend, I used the Kanban project board in GitHub to help guide me through the user stories for the frontend application. creating this API. I used Agile principles again to create 5 EPICs and their subsequent user stories, where each user story belongs to one EPIC. Since most user stories dealing with my 7 separate apps in this project were discussed in the backend README documentation, I'll cover new EPICs here along with their user stories.
 
-### NavBar
-As the developer I can create a functional navigation bar at the top of my page so that users can easily look at different pages of the site.
+### Site Users (Artists & Art Enthusiasts)
+- As a user, I want to create an account so that I can interact with the community.
+- As a user, I want to log in and out securely so that I can protect my account.
+- As a user, I want to reset my password in case I forget it.
+- As a user, I want to update my profile with a bio, profile picture, and links to my social media.
+- As a user, I want to follow other artists so that I can see their latest posts.
+- As a user, I want to like and comment on posts to engage with other artists.
+- As a user, I want to edit or delete my comments in case I make a mistake.
+- As a user, I want to upload and manage my artwork so that I can showcase my portfolio.
+- As a user, I want to categorize my artwork (e.g., Portraits, Landscapes) to help users find relevant content.
+- As a user, I want to save my favorite artworks to revisit them later.
+- As a user, I want to share art events so that others can participate.
+- As a user, I want to receive notifications for likes, comments, and follows so that I stay updated.
+- As a user, I want to participate in art challenges and contests to improve my skills.
 
-#### User Stories
-- As a user I can click each navbar icon so that I am redirected to different pages.
-- As a user I can upload a profile picture so that other users can see who my account belongs to.
-
-### Homepage
-As the developer I can create a homepage where users can log in / register and see site information so that they know of events occurring.
-
-#### User Stories
-- As a user I can create an account so that I can create and view posts and see other users' profiles.
-- As a user I can log into my account so that I can interact fully with the website.
-- As a logged in user I can see a list of posts so that I can like and share my comments on.
-- As a logged in user I can use the search bar so that I can search for posts or other users by keyword.
-- As a logged in user I can view the 'popular profiles' section so that I can see profiles of other users and choose to follow them.
-
-### Profile
-As the developer I can create a Profile section so that users can update personal information and images.
-
-#### User Stories
-- As a user I can upload a picture so that other users can see who I am via my profile.
-- As a user I can view others' profiles so that I can see their posts and profile details.
-- As a user I can edit my own profile so that the information always remains updated and correct.
-- As a user I can change my username and password so that these credentials are updated in case of a security issue.
-
-### Comments
-As the developer I can create a Comments section so that users can comment on posts and interact with others on the site
-
-#### User Stories
-- As a user I can comment on a post so that others will know my opinion.
-- As a user I can view other comments on a post or event to know what their opinion is on the post.
-- As a user I can edit my own comments so that information is corrected.
-- As a user I can delete my own comments so that any erroneous information from a comment is not on the site.
-- As a user I can like and unlike comments of other users.
-
-### Following
-As the developer I can create a followers section so that registered, logged in users can follow and unfollow other users.
-
-#### User Stories
-- As a user I can follow another registered user so that I can view their profile on my feed page.
-- As a user I can unfollow another registered user so that their profile information will no longer be visible on my feed page.
-- As the developer I can create follow / unfollow buttons so that registered, logged in users can follow and unfollow other users.
-
+### Site Owners/Admins
+- As an admin, I want to manage user accounts so that I can moderate the platform.
+- As an admin, I want to remove inappropriate posts or comments to maintain a safe environment.
+- As an admin, I want to feature certain posts or artists to highlight great content.
+- As an admin, I want to review reported posts or users and take necessary action.
+- As an admin, I want to analyze site activity to improve user engagement.
 
 [Back to top](<#table-of-contents>)
 
@@ -161,7 +137,7 @@ Once logged in, the user will see additional icons and be able to navigate to th
 
 
 # **Future Implementations**
-
+- Add Category - The model is in the backend but I couldn't implement it due to time constraint.
 - Delete Confirmation - Confirming a delete before executing it is an aspect that would be beneficial to this website. At the moment, users can delete posts, comments and reviews with just one click of a button. A tool tip or other pop-up message asking the user if they're sure they want to delete would be a safer way to erase information, helping to guard against accidental deletes and therefore, loss of data.
 - Image Galleries – Allow users to create albums or collections of their artworks.
 - Image Filters & Editing – Integrate basic photo filters and editing (e.g., cropping, brightness adjustment).
@@ -209,6 +185,8 @@ Once logged in, the user will see additional icons and be able to navigate to th
 
 * [**Testing**](<#testing>)
 
+I personally tested this application in Chrome, Safari and Firefox on laptop and mobile devices. The website worked well with no issues that I noted. 
+
 ## Code Validation
 ### HTML, CSS and JavaScript validation
 HTML validation was done using the [W3C HTML Validator](https://validator.w3.org/). No error was found
@@ -229,7 +207,6 @@ JavaScript files were manually validated and errors resolved throughout the deve
 
 Files were also manually run through [JS Hint](https://jshint.com/). Though no errors were found, a few 'warnings' were present on various pages. These were largely in relation to the version of ES used:
 
-- Unclosed regular expression.
 - 'Async functions' is only available in ES8 (use 'esversion: 8').
 - 'Object spread property' is only available in ES9 (use 'esversion: 9').
 - 'Optional chaining' is only available in ES11 (use 'esversion: 11').
@@ -332,7 +309,7 @@ Another option is to clone the repository, which will link the copy to the origi
 
 # **Credits**
 
-*[Pixabay](https://pixabay.com/) -  Some images were obtained through a pixabay and are only used for the purpose of this project. while the other artworks were done by my husband .
+* [Pixabay](https://pixabay.com/) -  Some images were obtained through a pixabay and are only used for the purpose of this project. while the other artworks were done by my husband .
 
 * Some of the codes used were from the walkthrough video of the moment app made by Code institute
 
